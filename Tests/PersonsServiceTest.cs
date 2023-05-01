@@ -18,8 +18,8 @@ namespace Tests
 
 		public PersonsServiceTest(ITestOutputHelper testOutputHelper)
 		{
-			_personService = new PersonsService();
-			_countryService = new CountriesService();
+			_personService = new PersonsService(false);
+			_countryService = new CountriesService(false);
 			_testOutputHelper = testOutputHelper;
 		}
 
