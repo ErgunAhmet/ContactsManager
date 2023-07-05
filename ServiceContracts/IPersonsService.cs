@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
 
@@ -63,5 +64,16 @@ namespace ServiceContracts
 		/// <param name="PersonID">PersonID to delete</param>
 		/// <returns>Returns true, if the deletion is successful; otherwise false</returns>
 		Task<bool> DeletePerson(Guid? personID);
+		/// <summary>
+		/// Returns persons as CSV
+		/// </summary>
+		/// <returns></returns>
+		Task<MemoryStream> GetPersonsCSV();
+		/// <summary>
+		/// Returns persons as excel
+		/// </summary>
+		/// <returns></returns>
+		Task<MemoryStream> GetPersonsExcel();
+
 	}
 }
