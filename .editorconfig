@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS0117: 'ValidationHelper' does not contain a definition for 'ModelValidation'
+dotnet_diagnostic.CS0117.severity = error

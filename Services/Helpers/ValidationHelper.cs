@@ -8,17 +8,19 @@ using System.Threading.Tasks;
 
 namespace Services.Helpers
 {
-	public class ValidationHelper
-	{
-		internal static void ModelValidation(object obj)
-		{
-			ValidationContext validationContext = new ValidationContext(obj);
-			List<ValidationResult> validationResult = new List<ValidationResult>();
-			bool isValid =
-			Validator.TryValidateObject(obj, validationContext, validationResult, true);
+    public class ValidationHelper
+    {
+        public static void ModelValidation(object obj)
+        {
+            //Model validations
+            ValidationContext validationContext = new ValidationContext(obj);
+            List<ValidationResult> validationResults = new List<ValidationResult>();
 
-			if (!isValid)
-				throw new ArgumentException(validationResult.FirstOrDefault()?.ErrorMessage);
-		}
-	}
+            bool isValid = Validator.TryValidateObject(obj, validationContext, validationResults, true);
+            if (!isValid)
+            {
+                throw new ArgumentException(validationResults.FirstOrDefault()?.ErrorMessage);
+            }
+        }
+    }
 }
