@@ -4,8 +4,31 @@ using Microsoft.EntityFrameworkCore;
 using Entities;
 using RepositoryContracts;
 using Repositories;
+using Serilog;
+using Serilog.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//builder.Host.ConfigureLogging(logginProvider =>
+//{
+//    logginProvider.ClearProviders();
+//    logginProvider.AddConsole();
+//    logginProvider.AddDebug();
+//    logginProvider.AddEventLog();
+//});
+
+//Serilog
+builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, 
+    LoggerConfiguration loggerConfiguration) =>
+{
+    loggerConfiguration
+        //read configuration settings from built-in IConfiguration
+        .ReadFrom.Configuration(context.Configuration)
+        //read out current app's services and make them available to serilog
+        .ReadFrom.Services(services);
+    
+});
+
 builder.Services.AddControllersWithViews();
 
 //add services into IoC container
@@ -21,14 +44,29 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-//Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=PersonsDatabase;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields =
+        Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties |
+        Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders;
+});
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
 
 if (builder.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+
+app.UseHttpLogging();
+
+//app.Logger.LogDebug("debug-message");
+//app.Logger.LogInformation("debug-message");
+//app.Logger.LogWarning("debug-message");
+//app.Logger.LogError("debug-message");
+//app.Logger.LogCritical("debug-message");
 
 if (builder.Environment.IsEnvironment("Test") == false)
     Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa");
